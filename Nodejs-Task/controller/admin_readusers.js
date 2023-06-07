@@ -4,9 +4,6 @@ const emp_address = require('../user_model/emp_address');
 
 const readusers = async (req, res) => {
   try {
-    const emp_id = req.params.id;
-
-    if (emp_id === '1') {
       users = await emp_info.findAll({
         include: [
           { model: emp_qualification },
@@ -16,11 +13,12 @@ const readusers = async (req, res) => {
       if (users.length === 0) {
         return res.status(404).json({ error: 'User not found' });
       }
-      res.status(200).json(users);
-    } else {
-      res.status(403).json({ error: 'User cannot read the data' });
-    }
-  } catch (err) {
+      res.status(200).json({
+        status:'success',
+        message:'User information fetched successfully',
+        data:{users}
+      });
+    } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error in fetching user details' });
   }

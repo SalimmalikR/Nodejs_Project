@@ -1,6 +1,7 @@
 const emp_info = require('../user_model/emp_info');
 const emp_qualification = require('../user_model/emp_qualification');
 const emp_address = require('../user_model/emp_address');
+const error_response = require('../utils/error_response');
 
 const readusers = async (req, res) => {
   try {
@@ -15,13 +16,23 @@ const readusers = async (req, res) => {
           { model: emp_address }
         ]
       });
-      res.status(200).json(users);
+      res.status(200).json({
+        status: 'success',
+        message: 'user information fetched successfully',
+        data: {users}
+      });
     } else {
-      return res.status(403).json({ error: 'Admin data is not allowed' });
+      return res.status(403).json({
+        status:error_response.failure,
+        message:error_response.noadmin
+      });
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error in fetching user details' });
+    res.status(500).json({
+      status:error_response.failure,
+      message:error_response.servererror
+    });
   }
 };
 

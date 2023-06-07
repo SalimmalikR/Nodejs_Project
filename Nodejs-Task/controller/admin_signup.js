@@ -2,6 +2,7 @@ const emp_info = require('../user_model/emp_info');
 const bcrypt = require('bcrypt');
 const emp_qualification = require('../user_model/emp_qualification');
 const emp_address = require('../user_model/emp_address');
+const error_response = require('../utils/error_response')  
 
 const signup = async (req, res) => {
   try {
@@ -42,12 +43,10 @@ const signup = async (req, res) => {
       country
     } = req.body;
 
-    const upload = req.file;
-    console.log(upload);
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const createdUser = await emp_info.create({
+    const empinfo = await emp_info.create({
       // Employee information fields
       firstName,
       lastName,
@@ -59,7 +58,6 @@ const signup = async (req, res) => {
       experience,
       salary,
       AadharNo,
-      fileupload: upload.filename,
       mobile_no,
       FatherName,
       MotherName,
@@ -67,7 +65,7 @@ const signup = async (req, res) => {
       Mother_Occupation
     });
 
-    await emp_qualification.create({
+    const empqualification= await emp_qualification.create({
       // Employee Qualification fields
       college_name,
       degree,
@@ -78,10 +76,10 @@ const signup = async (req, res) => {
       HSC_Percentege,
       SSLC_School_name,
       SSLC_Percentege,
-      userId:createdUser.emp_id,
+      userId:empinfo.emp_id,
     });
 
-    await emp_address.create({
+    const empaddress=await emp_address.create({
       // Employee address fields
       DoorNo,
       street_name,
@@ -90,13 +88,20 @@ const signup = async (req, res) => {
       state,
       pincode,
       country,
-      userId:createdUser.emp_id,
+      userId:empinfo.emp_id,
     });
 
-    res.status(200).json({ message: 'User created successfully' });
+    res.status(200).json({ 
+      status: 'success',
+      message: 'User created successfully',
+      data:{empinfo,empqualification,empaddress}
+    });
   } catch (err) {
     console.error('Error creating user:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      status:error_response.failure,
+      message:error_response.servererror,
+    });
   }
 };
 

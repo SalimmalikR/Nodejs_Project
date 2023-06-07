@@ -34,9 +34,27 @@ emp_info.init({
     type: DataTypes.ENUM('male', 'female', 'other'),
     allowNull: false,
   },
-  skills: {
-    type: DataTypes.TEXT,
+  // Skills: {
+  //   type: DataTypes.STRING, // Multiselect field
+  //   allowNull: false,
+  //   set(value) {
+  //     if (Array.isArray(value)) {
+  //       this.setDataValue('Skills', value.join(','));
+  //     } else {
+  //       this.setDataValue('Skills', value);
+  //     }
+  //   }
+  // },
+  skills:{
+    type: DataTypes.STRING,
     allowNull: false,
+    get() {
+      const rawValue = this.getDataValue('skills');
+      return rawValue ? rawValue.split(',') : [];
+    },
+    set(value) {
+      this.setDataValue('skills', value.join(','));
+    },
   },
   experience: {
     type: DataTypes.INTEGER,
@@ -49,16 +67,16 @@ emp_info.init({
   AadharNo: {
     type: DataTypes.BIGINT,
     allowNull: false,
-    unique:true,
+    unique: true,
   },
   fileupload: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   mobile_no: {
     type: DataTypes.BIGINT,
     allowNull: false,
-    unique:true,
+    unique: true,
   },
   FatherName: {
     type: DataTypes.STRING,
@@ -77,7 +95,7 @@ emp_info.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-},{
+}, {
   sequelize,
   modelName: "emp_info",
   freezeTableName: true,

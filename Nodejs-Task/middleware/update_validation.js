@@ -35,9 +35,15 @@ const empInfoSchema = Joi.object({
       'any.only': 'Gender must be either "male", "female", or "others"',
       'any.required': 'Gender is required',
     }),
-    skills: Joi.string().messages({
-      'string.base': 'Skills must be a string',
-      'any.required': 'Skills is required',
+    // skills: Joi.array().items(Joi.string()).messages({
+    //   'string.base': 'Skills must be a string',
+    //   'any.required': 'Skills is required',
+    // }),
+    skills: Joi.array().items(Joi.string()).min(1).unique().messages({
+      'array.base': 'Skills must be an array.',
+      'array.min': 'At least one skill is required.',
+      'array.unique': 'Skills must be unique.',
+      'string.base': 'Each skill must be a string.',
     }),
     experience: Joi.number().integer().min(1).max(40).messages({
       'number.base': 'Experience must be a number',

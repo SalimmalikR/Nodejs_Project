@@ -6,7 +6,7 @@ app.use(express.json());
 
 const db=require('./config/db')
 
-const adminrouter=require('./routers/admin_routers')
+const adminrouter=require('./routers/routers')
 
 const userrouter=require('./routers/user_routers')
 

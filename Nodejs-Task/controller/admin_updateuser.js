@@ -43,35 +43,32 @@ const updateuser = async (req, res) => {
             country
         } = req.body;
 
-        const file=req.file
-
         // Update employee information
         const empinfo = await emp_info.findByPk(id);
         if (!empinfo) {
             return res.status(404).json({ error: 'User not found in employee information' });
         }
 
-        await emp_info.update(
+        const infoupdate = await empinfo.update(
             {
                 // Employee information fields
                 firstName,
                 lastName,
                 email,
-                password:password ? await bcrypt.hash(password, 10) : empinfo.password ,
+                password: password ? await bcrypt.hash(password, 10) : empinfo.password,
                 age,
                 gender,
                 skills,
                 experience,
                 salary,
                 AadharNo,
-                fileupload: file ? await file.filename : empinfo.fileupload,
                 mobile_no,
                 FatherName,
                 MotherName,
                 Father_occupation,
                 Mother_Occupation
             },
-            { where: { emp_id: id } } 
+            { where: { emp_id: id } }
         );
 
         // Update employee qualification
@@ -80,7 +77,7 @@ const updateuser = async (req, res) => {
             return res.status(404).json({ error: 'User not found in employee qualification' });
         }
 
-        await emp_qualification.update(
+        const qualificationupdate = await empqualification.update(
             {
                 // Employee Qualification fields
                 college_name,
@@ -93,7 +90,7 @@ const updateuser = async (req, res) => {
                 SSLC_School_name,
                 SSLC_Percentege
             },
-            { where: { userId: id } } 
+            { where: { userId: id } }
         );
 
         // Update employee address
@@ -102,7 +99,7 @@ const updateuser = async (req, res) => {
             return res.status(404).json({ error: 'User not found in employee address' });
         }
 
-        await emp_address.update(
+        const addressupdate = await empaddress.update(
             {
                 // Employee address fields
                 DoorNo,
@@ -117,7 +114,11 @@ const updateuser = async (req, res) => {
         );
 
         // Send individual responses for each update operation
-        res.status(201).json({ message: 'User information updated successfully' });
+        res.status(201).json({
+            status: 'success',
+            message: 'User information updated successfully',
+            data: { infoupdate, qualificationupdate, addressupdate }
+        });
     } catch (err) {
         console.error('Error updating user:', err);
         res.status(500).json({ error: 'Internal server error' });

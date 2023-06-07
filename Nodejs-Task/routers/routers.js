@@ -4,7 +4,7 @@ const router = express.Router();
 
 //require
 
-const login = require('../controller/admin_login')
+const login = require('../controller/login')
 
 const readusers=require('../controller/admin_readusers')
 
@@ -13,6 +13,8 @@ const signup=require('../controller/admin_signup')
 const updateuser=require('../controller/admin_updateuser')
 
 const deleteuser=require('../controller/admin_deleteuser')
+
+const fileupdate=require('../controller/fileupload')
 
 const file=require('../middleware/fileupload')
 
@@ -30,12 +32,14 @@ const jwt = require('../middleware/jwt');
 
 router.post('/login',login)
 
-router.get('/readusers/:id',jwt,readusers)
+router.get('/readusers',jwt,readusers)
 
 router.put('/updateuser/:id',jwt,file.single('files'),updatevalidation,updateuser)
 
 router.post('/resisteruser',jwt,file.single('files'),validate,signup)
 
 router.delete('/deleteuser/:id',jwt,deleteuser)
+
+router.put('/fileupload/:id',jwt,file.single('files'),updatevalidation,fileupdate)
 
 module.exports = router

@@ -34,9 +34,16 @@ module.exports = {
         type: Sequelize.ENUM('male', 'female', 'other'),
         allowNull: false,
       },
-      skills: {
-        type: Sequelize.TEXT,
+      skills:{
+        type: Sequelize.STRING,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue('skills');
+          return rawValue ? rawValue.split(',') : [];
+        },
+        set(value) {
+          this.setDataValue('skills', value.join(','));
+        },
       },
       experience: {
         type: Sequelize.INTEGER,
@@ -53,7 +60,7 @@ module.exports = {
       },
       fileupload: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       mobile_no: {
         type: Sequelize.BIGINT,
