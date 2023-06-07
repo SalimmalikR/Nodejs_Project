@@ -62,9 +62,9 @@ const empInfoSchema = Joi.object({
       'string.pattern.base': 'Aadhar Number must be a 12-digit number',
       'any.required': 'Aadhar Number is required',
     }),
-    fileupload: Joi.string().messages({
-      'any.required': 'File Upload is required',
-    }),
+    // fileupload: Joi.string().messages({
+    //   'any.required': 'File Upload is required',
+    // }),
     mobile_no: Joi.string().pattern(/^\d{10}$/).messages({
       'string.pattern.base': 'Mobile Number must be a 10-digit number',
       'any.required': 'Mobile Number is required',
@@ -193,10 +193,11 @@ const empInfoSchema = Joi.object({
       'any.required': 'Pincode is required',
     }),
   
-    country: Joi.string().min(3).max(50).trim().allow('').label('Country').messages({
+    country: Joi.string().min(3).max(50).valid('India', 'USA', 'UK').trim().allow('').label('Country').messages({
       'string.min': 'Country must be at least 3 characters long',
       'string.max': 'Country must not exceed 50 characters',
       'any.required': 'Country is required',
+      'any.only': 'Invalid country. Allowed values are: India, USA, UK',
     }),
   
   })

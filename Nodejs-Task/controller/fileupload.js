@@ -9,7 +9,16 @@ const fileupdate = async (req, res) => {
     // Find the user by the provided ID
     const user = await empinfo.findByPk(id);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({
+        status:error_response.failure,
+        message:error_response.notfound
+      });
+    }
+    if(!file){
+      return res.status(404).json({
+        status:error_response.failure,
+        message:error_response.uploadfile
+      })  
     }
 
     // Update the user's fileupload field with the new file filename

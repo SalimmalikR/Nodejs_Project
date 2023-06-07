@@ -16,7 +16,7 @@ const deleteuser=require('../controller/admin_deleteuser')
 
 const fileupdate=require('../controller/fileupload')
 
-const file=require('../middleware/fileupload')
+const fileupload=require('../middleware/fileupload')
 
 // Middle ware validation
 
@@ -34,12 +34,12 @@ router.post('/login',login)
 
 router.get('/readusers',jwt,readusers)
 
-router.put('/updateuser/:id',jwt,file.single('files'),updatevalidation,updateuser)
+router.put('/updateuser/:id',jwt,updatevalidation,updateuser)
 
-router.post('/resisteruser',jwt,file.single('files'),validate,signup)
+router.post('/resisteruser',jwt,validate,signup)
 
 router.delete('/deleteuser/:id',jwt,deleteuser)
 
-router.put('/fileupload/:id',jwt,file.single('files'),updatevalidation,fileupdate)
+router.put('/fileupload/:id',jwt,fileupload,fileupdate)
 
 module.exports = router
