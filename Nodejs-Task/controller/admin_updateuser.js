@@ -2,127 +2,68 @@ const bcrypt = require('bcrypt');
 const emp_info = require('../user_model/emp_info');
 const emp_qualification = require('../user_model/emp_qualification');
 const emp_address = require('../user_model/emp_address');
+const error_response = require('../utils/error_response');
+const customerror = require('../utils/customerr');
 
-const updateuser = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const {
-            // Employee information
-            firstName,
-            lastName,
-            email,
-            password,
-            age,
-            gender,
-            skills,
-            experience,
-            salary,
-            AadharNo,
-            mobile_no,
-            FatherName,
-            MotherName,
-            Father_occupation,
-            Mother_Occupation,
-            // Employee Qualification fields
-            college_name,
-            degree,
-            stream,
-            cgpa,
-            location,
-            HSC_School_name,
-            HSC_Percentege,
-            SSLC_School_name,
-            SSLC_Percentege,
-            // Employee address fields
-            DoorNo,
-            street_name,
-            Area,
-            city,
-            state,
-            pincode,
-            country
-        } = req.body;
+const updateuser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const {
+      password,
+      ...employeeFields
+    } = req.body;
 
-        // Update employee information
-        const empinfo = await emp_info.findByPk(id);
-        if (!empinfo) {
-            return res.status(404).json({ error: 'User not found in employee information' });
-        }
-
-        const infoupdate = await empinfo.update(
-            {
-                // Employee information fields
-                firstName,
-                lastName,
-                email,
-                password: password ? await bcrypt.hash(password, 10) : empinfo.password,
-                age,
-                gender,
-                skills,
-                experience,
-                salary,
-                AadharNo,
-                mobile_no,
-                FatherName,
-                MotherName,
-                Father_occupation,
-                Mother_Occupation
-            },
-            { where: { emp_id: id } }
-        );
-
-        // Update employee qualification
-        const empqualification = await emp_qualification.findOne({ where: { userId: id } });
-        if (!empqualification) {
-            return res.status(404).json({ error: 'User not found in employee qualification' });
-        }
-
-        const qualificationupdate = await empqualification.update(
-            {
-                // Employee Qualification fields
-                college_name,
-                degree,
-                stream,
-                cgpa,
-                location,
-                HSC_School_name,
-                HSC_Percentege,
-                SSLC_School_name,
-                SSLC_Percentege
-            },
-            { where: { userId: id } }
-        );
-
-        // Update employee address
-        const empaddress = await emp_address.findOne({ where: { userId: id } });
-        if (!empaddress) {
-            return res.status(404).json({ error: 'User not found in employee address' });
-        }
-
-        const addressupdate = await empaddress.update(
-            {
-                // Employee address fields
-                DoorNo,
-                street_name,
-                Area,
-                city,
-                state,
-                pincode,
-                country
-            },
-            { where: { userId: id } }
-        );
-
-        // Send individual responses for each update operation
-        res.status(201).json({
-            status: 'success',
-            message: 'User information updated successfully',
-            data: { infoupdate, qualificationupdate, addressupdate }
-        });
-    } catch (err) {
-        console.error('Error updating user:', err);
-        res.status(500).json({ error: 'Internal server error' });
+    const empinfo = await emp_info.findByPk(id);
+    if (!empinfo) {
+      const err = new customerror(404, error_response.notfound);
+      return next(err);
     }
+
+    const infoupdate = await empinfo.update(
+      {
+        ...employeeFields,
+        password: password ? await bcrypt.hash(password, 10) : empinfo.password
+      },
+      { where: { emp_id: id } }
+    );
+
+    // Update employee qualification
+    const empqualification = await emp_qualification.findOne({ where: { userId: id } });
+    if (!empqualification) {
+      const err = new customerror(404, error_response.notfound);
+      return next(err);
+    }
+
+    const qualificationupdate = await empqualification.update(
+      {
+        ...employeeFields
+      },
+      { where: { userId: id } }
+    );
+
+    // Update employee address
+    const empaddress = await emp_address.findOne({ where: { userId: id } });
+    if (!empaddress) {
+      const err = new customerror(404, error_response.notfound);
+      return next(err);
+    }
+
+    const addressupdate = await empaddress.update(
+      {
+        ...employeeFields
+      },
+      { where: { userId: id } }
+    );
+
+    res.status(201).json({
+      status: 'success',
+      message: 'User information updated successfully',
+      data: { infoupdate, qualificationupdate, addressupdate }
+    });
+  } catch (error) {
+    const err = new customerror(500, error_response.servererror);
+    next(err);
+  }
 };
 
 module.exports = updateuser;

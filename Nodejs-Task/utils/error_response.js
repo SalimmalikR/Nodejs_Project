@@ -7,4 +7,5 @@ module.exports={
     invalidtoken:'Invalid token',
     noadmin:'Admin datas are not supported',
     uploadfile:'please upload a image',
+    fetcherror:'Error in fetching user details',
 }

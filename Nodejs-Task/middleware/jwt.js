@@ -1,24 +1,21 @@
 const jwt = require('jsonwebtoken');
 const error_response = require('../utils/error_response')
+const customerror=require('../utils/customerr')
 
 function verifyToken(req, res, next) {
-    const token =req.header('jwt');
+    const token = req.header('jwt');
 
     if (!token) {
-        return res.status(401).json({
-            status:error_response.failure,
-            message:error_response.notoken
-        });
+        const err = new customerror(401,error_response.notoken);
+        next(err);
     }
     try {
         const user = jwt.verify(token, 'secretkey')
         req.emp_id = user.emp_id;
         next();
-    } catch (err) {
-        return res.status(401).json({
-            status:error_response.failure,
-            message:error_response.invalidtoken
-        });
+    } catch (error) {
+        const err = new customerror(401,error_response.invalidtoken);
+        next(err);
     }
 }
 

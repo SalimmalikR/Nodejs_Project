@@ -2,8 +2,9 @@ const emp_info = require('../user_model/emp_info');
 const emp_qualification = require('../user_model/emp_qualification');
 const emp_address = require('../user_model/emp_address');
 const error_response = require('../utils/error_response');
+const customerror = require('../utils/customerr')
 
-const readusers = async (req, res) => {
+const readusers = async (req, res, next) => {
   try {
     const emp_id = req.params.id;
     let users;
@@ -19,20 +20,15 @@ const readusers = async (req, res) => {
       res.status(200).json({
         status: 'success',
         message: 'user information fetched successfully',
-        data: {users}
+        data: { users }
       });
     } else {
-      return res.status(403).json({
-        status:error_response.failure,
-        message:error_response.noadmin
-      });
+      const err = new customerror(403, error_response.noadmin);
+      next(err);
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      status:error_response.failure,
-      message:error_response.servererror
-    });
+  } catch (error) {
+    const err = new customerror(500, error_response.uploadfile);
+    next(err);
   }
 };
 

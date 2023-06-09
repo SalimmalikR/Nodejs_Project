@@ -2,27 +2,24 @@ const users = require('../user_model/emp_info');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const error_response = require('../utils/error_response');
+const customerror=require('../utils/customerr')
 
 // Admin login with JWT Authorization
-const login = async (req, res) => {
+const login = async (req, res,next) => {
     const { email, password } = req.body;
     try {
         // Find the user with the given email
         const user = await users.findOne({ where: { email } });
         if (!user) {
-            return res.status(404).json({
-                status: error_response.failure,
-                message: error_response.notfound
-            });
+            const err=new customerror(404,error_response.notfound);
+            next(err);
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(401).json({
-                status: error_response.failure,
-                message: error_response.wrongpassword
-            });
+            const err=new customerror(401,error_response.wrongpassword);
+            next(err);
         }
 
         if (user.emp_id === 1) {
@@ -43,11 +40,8 @@ const login = async (req, res) => {
             });
         }
     } catch (error) {
-        console.error('Error during login:', error);
-        res.status(500).json({
-            status: error_response.failure,
-            message: error_response.servererror
-        });
+        const err=new customerror(500,error_response.servererror);
+            next(err);
     }
 };
 

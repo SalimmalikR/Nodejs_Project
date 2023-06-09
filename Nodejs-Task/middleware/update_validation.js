@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const CustomError = require('../utils/customerr');
 
 const empInfoSchema = Joi.object({
 
@@ -209,7 +210,9 @@ function validate(req, res, next) {
 
     if (empInfoError) {
         console.error("Error validating employee information:", empInfoError);
-        return res.status(400).json({ error: empInfoError.details[0].message });
+        // return res.status(400).json({ error: empInfoError.details[0].message });
+        const err = new CustomError(400, empInfoError.details[0].message);
+    next(err);
     }
 
     next();
