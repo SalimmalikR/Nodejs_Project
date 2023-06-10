@@ -40,7 +40,7 @@ const login = async (req, res,next) => {
             });
         }
     } catch (error) {
-        const err=new customerror(500,error_response.servererror);
+        const err=new customerror(500,error);
             next(err);
     }
 };

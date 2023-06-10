@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('employee', 'root', 'root12345', {
-  host: 'localhost',
-  dialect: 'mysql'
+require('dotenv').config();
+
+const sequelize = new Sequelize(process.env.DATABASE, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT
 });
 sequelize.authenticate().then(()=>{
     console.log('DB successfully Connected!');

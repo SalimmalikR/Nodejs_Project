@@ -10,14 +10,16 @@ const globalerrorcontroller=require('./controller/globalerrorcontroller')
 
 const adminrouter=require('./routers/routers')
 
-const userrouter=require('./routers/user_routers')
+const userrouter=require('./routers/user_routers');
+
+const CustomError = require('./utils/customerr');
 
 app.use(adminrouter)
 
 app.use(userrouter)
 
 app.all('*',(req, res, next) =>{
-    const err=new Error(`can't find ${req.originalUrl} on the server!`,'failes',404);
+    const err=new CustomError(404,`can't find ${req.originalUrl} on the server!`);
     next(err);
 })
 

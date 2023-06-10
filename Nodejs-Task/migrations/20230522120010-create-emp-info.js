@@ -84,6 +84,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      passwordresettoken: {
+        type: Sequelize.STRING,
+      },
     });
   },
   async down(queryInterface, Sequelize) {

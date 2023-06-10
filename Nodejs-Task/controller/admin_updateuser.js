@@ -9,7 +9,6 @@ const updateuser = async (req, res, next) => {
   try {
     const id = req.params.id;
     const {
-      password,
       ...employeeFields
     } = req.body;
 
@@ -18,11 +17,14 @@ const updateuser = async (req, res, next) => {
       const err = new customerror(404, error_response.notfound);
       return next(err);
     }
+    if(req.body.password){
+      const err = new customerror(404, error_response.updatepassword);
+      return next(err);
+    }
 
     const infoupdate = await empinfo.update(
       {
         ...employeeFields,
-        password: password ? await bcrypt.hash(password, 10) : empinfo.password
       },
       { where: { emp_id: id } }
     );

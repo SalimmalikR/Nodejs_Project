@@ -95,6 +95,9 @@ emp_info.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
+  passwordresettoken: {
+    type: DataTypes.STRING,
+  },
 }, {
   sequelize,
   modelName: "emp_info",
